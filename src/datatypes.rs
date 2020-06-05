@@ -3,7 +3,7 @@ use matplotrust::*;
 use physical_constants::NEWTONIAN_CONSTANT_OF_GRAVITATION as G;
 use std::ops::*;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Body {
 	pub position: Vector3<f64>,
 	pub velocity: Vector3<f64>,
@@ -33,21 +33,10 @@ impl Body {
 				.mul(force)
 				.div(self.mass),
 		);
-		//println!("{:#?}", self.velocity);
 	}
 
 	pub fn update_position(&mut self) {
 		self.position = self.position.add(self.velocity);
-	}
-
-	pub fn print(&self) {
-		println!(
-			"X-position {}, Y-position {}, Mass {}	Velocity {}",
-			self.position.x,
-			self.position.y,
-			self.mass,
-			self.position.distance(self.velocity)
-		)
 	}
 }
 
@@ -62,11 +51,12 @@ impl System {
 
 	pub fn update(&mut self) {
 		let secondary_bodies = self.bodies.clone();
-		for primary_body in &mut self.bodies {			
-			for secondary_body in &secondary_bodies {
-				println!("{:#?}, {:#?}", primary_body.position, primary_body.velocity);
-				primary_body.update_velocity(*secondary_body);
-				//primary_body.update_position();
+		for (i, primary_body) in self.bodies.iter_mut().enumerate() {
+			for (j, secondary_body) in secondary_bodies.iter().enumerate() {
+				if i != j {
+					primary_body.update_velocity(*secondary_body);
+					primary_body.update_position();
+				}
 			}
 		}
 	}
@@ -86,12 +76,12 @@ impl System {
 			let mut values: [Vec<f64>; 2] = [Vec::new(), Vec::new()];
 			for cycle in &mut cycle_values {
 				values[0].push(cycle[i].x);
-				values[1].push(cycle[i].z);
+				values[1].push(cycle[i].y);
 			}
 			lp = line_plot::<f64, f64>(values[0].clone(), values[1].clone(), None);
 			figure.add_plot(lp.clone());
 			figure.add_plot(lp.clone());
 		}
-		print!("{:#?}", figure.save("./fig.png", None));
+		figure.save("./fig.png", None);
 	}
 }

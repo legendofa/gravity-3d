@@ -56,5 +56,5 @@ fn main() {
 	];
 
 	let mut system = datatypes::System::new(configurations[2].clone());
-	system.plot(1);
+	system.plot(100000);
 }

@@ -1,5 +1,5 @@
 [package]
-name = "gravity-2d"
+name = "gravity-3d"
 version = "0.1.0"
 authors = ["st170001 <st170001@stud.uni-stuttgart.de>"]
 edition = "2018"
